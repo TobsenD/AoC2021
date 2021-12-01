@@ -2069,7 +2069,6 @@ func task02(x []int) {
 		last = m[k]
 	}
 
-	fmt.Println("countze", countzero)
 	fmt.Println("count", count)
 
 }
