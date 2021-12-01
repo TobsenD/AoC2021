@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"sort"
 )
 
 func main() {
@@ -2008,6 +2009,12 @@ func main() {
 		7179,
 		7181}
 
+	//task01(x)
+	task02(x)
+}
+
+func task01(x []int) {
+
 	var count int = 0
 
 	for i := 0; i < len(x); i++ {
@@ -2024,4 +2031,45 @@ func main() {
 	}
 
 	fmt.Println(count)
+}
+
+func task02(x []int) {
+
+	m := make(map[int]int)
+
+	for i := 0; i < len(x)-2; i++ {
+		m[i] = x[i] + x[i+1] + x[i+2]
+	}
+
+	fmt.Println(m)
+
+	var count int = 0
+	var countzero int = 0
+	var last int = 0
+
+	var keys []int
+	for k := range m {
+		keys = append(keys, k)
+	}
+
+	sort.Ints(keys)
+	for _, k := range keys {
+
+		if last != 0 {
+			if m[k] > last {
+				fmt.Println(m[k], "increased")
+				count++
+			} else if m[k] < last {
+				fmt.Println(m[k], "decreased")
+			}
+		} else {
+			fmt.Println(m[k], "N/A - no previous measurement")
+			countzero++
+		}
+		last = m[k]
+	}
+
+	fmt.Println("countze", countzero)
+	fmt.Println("count", count)
+
 }
