@@ -11,8 +11,8 @@ import (
 
 func main() {
 
-	task01()
-	//task02()
+	//task01()
+	task02()
 
 }
 
@@ -55,7 +55,6 @@ func task01() {
 				if lineCount > 0 {
 					boardList[boardCount] = board
 					board = [5][5]int{{0, 0, 0, 0, 0}, {0, 0, 0, 0, 0}, {0, 0, 0, 0, 0}, {0, 0, 0, 0, 0}, {0, 0, 0, 0, 0}}
-					fmt.Println("BingoBoard end")
 					lineCount = 0
 					boardCount++
 				}
@@ -91,37 +90,82 @@ func task01() {
 
 }
 
-func calcWin(winNum int, board [5][5]int, drawnNumbers []int) {
-	var sum int
-	for i := 0; i < 5; i++ {
-		for j := 0; j < 5; j++ {
-			if !isIntInArray(board[i][j], drawnNumbers) {
-				sum += board[i][j]
-			}
-		}
-	}
-
-	fmt.Println(sum * winNum)
-
-}
-
 func task02() {
 	file, err := os.Open("./input04.txt")
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer file.Close()
-
 	scanner := bufio.NewScanner(file)
-	// optionally, resize scanner's capacity for lines over 64K, see next example
+
+	var isFirstLine bool = true
+	var bingoNumList []int
+	var lineCount int
+	var boardCount int
+	var board = [5][5]int{{0, 0, 0, 0, 0}, {0, 0, 0, 0, 0}, {0, 0, 0, 0, 0}, {0, 0, 0, 0, 0}, {0, 0, 0, 0, 0}}
+	boardList := make(map[int][5][5]int)
 	for scanner.Scan() {
 		line := scanner.Text()
-		fmt.Println(line)
+		//Reading first Line with Bingo numbers.
+		if isFirstLine {
+			strs := strings.Split(scanner.Text(), ",")
+			bingoNumList = make([]int, len(strs))
+			for i, str := range strs {
+				bingoNumList[i] = convertInt(str)
+			}
+			isFirstLine = false
+		} else {
+			if len(line) > 0 {
+				//Trimming double and leading whitespaces
+				tmpline := strings.ReplaceAll(line, "  ", " ")
+				tmpline = strings.TrimSpace(tmpline)
+				//Splitting Board String
+				slc := strings.Split(tmpline, " ")
+				for i := range slc {
+					board[lineCount][i] = convertInt(slc[i])
+				}
+				lineCount++
+			} else {
+				if lineCount > 0 {
+					boardList[boardCount] = board
+					board = [5][5]int{{0, 0, 0, 0, 0}, {0, 0, 0, 0, 0}, {0, 0, 0, 0, 0}, {0, 0, 0, 0, 0}, {0, 0, 0, 0, 0}}
+					lineCount = 0
+					boardCount++
+				}
+			}
+		}
+
+		if err := scanner.Err(); err != nil {
+			log.Fatal(err)
+		}
 	}
 
-	if err := scanner.Err(); err != nil {
-		log.Fatal(err)
+	var drawnNumbers []int
+	var drawnOnWin []int
+	var winningBoards []int
+	var winBoard [5][5]int
+	var winNum int
+
+	for _, bingoNum := range bingoNumList {
+
+		drawnNumbers = append(drawnNumbers, bingoNum)
+
+		for i := 0; i < len(boardList); i++ {
+
+			if !isIntInArray(i, winningBoards) {
+				if checkVert(boardList[i], drawnNumbers) || checkHori(boardList[i], drawnNumbers) {
+					winNum = bingoNum
+					winBoard = boardList[i]
+					drawnOnWin = drawnNumbers
+					winningBoards = append(winningBoards, i)
+				}
+			}
+		}
+
 	}
+
+	calcWin(winNum, winBoard, drawnOnWin)
+
 }
 
 func convertInt(s string) int {
@@ -168,4 +212,19 @@ func checkVert(board [5][5]int, drawnNumbers []int) bool {
 		}
 	}
 	return false
+}
+
+func calcWin(winNum int, board [5][5]int, drawnNumbers []int) {
+	var sum int
+	for i := 0; i < 5; i++ {
+		for j := 0; j < 5; j++ {
+			if !isIntInArray(board[i][j], drawnNumbers) {
+				sum += board[i][j]
+			}
+		}
+	}
+
+	fmt.Println("Calc win", sum, winNum)
+	fmt.Println(sum * winNum)
+
 }
