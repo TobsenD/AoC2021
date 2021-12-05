@@ -3,6 +3,9 @@ package main
 import (
 	"bufio"
 	"fmt"
+	"image"
+	"image/color"
+	"image/png"
 	"log"
 	"os"
 	"regexp"
@@ -157,15 +160,30 @@ func task02() {
 	//fmt.Println(ventMap)
 	var ventCount int
 
+	upLeft := image.Point{0, 0}
+	lowRight := image.Point{1000, 1000}
+
+	img := image.NewRGBA(image.Rectangle{upLeft, lowRight})
+	cyan := color.RGBA{100, 200, 200, 0xff}
+	yellow := color.RGBA{255, 165, 0, 0xff}
+
 	for i := 0; i < 1000; i++ {
 		for j := 0; j < 1000; j++ {
-			if ventMap[i][j] > 1 {
+			if ventMap[i][j] == 1 {
+				img.Set(i, j, cyan)
+			} else if ventMap[i][j] > 1 {
+				img.Set(i, j, yellow)
 				ventCount++
+			} else {
+				img.Set(i, j, color.Black)
 			}
 		}
 	}
 
 	fmt.Println(ventCount)
+	// Encode as PNG.
+	f, _ := os.Create("./image.png")
+	png.Encode(f, img)
 
 }
 
