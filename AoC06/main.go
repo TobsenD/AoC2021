@@ -11,8 +11,8 @@ import (
 
 func main() {
 
-	task01()
-	//task02()
+	//task01()
+	task02()
 
 }
 
@@ -64,7 +64,54 @@ func task01() {
 }
 
 func task02() {
+	file, err := os.Open("./input06.txt")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer file.Close()
+	scanner := bufio.NewScanner(file)
 
+	var fishTimers = [9]int{0, 0, 0, 0, 0, 0, 0, 0}
+
+	//Initial filling
+	for scanner.Scan() {
+		//Reading first Line with Bingo numbers.
+		strs := strings.Split(scanner.Text(), ",")
+		for _, str := range strs {
+			i := convertInt(str)
+			fishTimers[i]++
+		}
+	}
+
+	days := 256
+
+	//Cycle
+	for i := 0; i < days; i++ {
+
+		//fmt.Println(fishTimers)
+
+		zerocount := fishTimers[0]
+		fishTimers[0] = fishTimers[1]
+		fishTimers[1] = fishTimers[2]
+		fishTimers[2] = fishTimers[3]
+		fishTimers[3] = fishTimers[4]
+		fishTimers[4] = fishTimers[5]
+		fishTimers[5] = fishTimers[6]
+		fishTimers[6] = fishTimers[7] + zerocount
+		fishTimers[7] = fishTimers[8]
+		fishTimers[8] = zerocount
+	}
+
+	if err := scanner.Err(); err != nil {
+		log.Fatal(err)
+	}
+
+	var sum int
+	for _, val := range fishTimers {
+		sum = sum + val
+	}
+
+	fmt.Println(sum)
 }
 
 func convertInt(s string) int {
