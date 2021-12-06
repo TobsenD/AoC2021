@@ -29,7 +29,6 @@ func task01() {
 
 	//Initial filling
 	for scanner.Scan() {
-		//Reading first Line with Bingo numbers.
 		strs := strings.Split(scanner.Text(), ",")
 		for _, str := range strs {
 			fishTimers = append(fishTimers, convertInt(str))
@@ -75,7 +74,6 @@ func task02() {
 
 	//Initial filling
 	for scanner.Scan() {
-		//Reading first Line with Bingo numbers.
 		strs := strings.Split(scanner.Text(), ",")
 		for _, str := range strs {
 			i := convertInt(str)
