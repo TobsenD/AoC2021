@@ -104,8 +104,6 @@ func calcCrabFuel(array []int, min, max int) int {
 				tempFuelCost += minMaxValue - value
 			} else if value > minMaxValue {
 				tempFuelCost += value - minMaxValue
-			} else if value == minMaxValue {
-				tempFuelCost += 0
 			}
 		}
 		if tempFuelCost < cheapestFuel || cheapestFuel == 0 {
@@ -130,8 +128,6 @@ func calcCrabEngineeredFuel(array []int, min, max int) int {
 				for x := 0; x < steps; x++ {
 					tempFuelCost += x + 1
 				}
-			} else if value == minMaxValue {
-				tempFuelCost += 0
 			}
 		}
 		if tempFuelCost < cheapestFuel || cheapestFuel == 0 {
