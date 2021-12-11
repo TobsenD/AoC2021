@@ -11,8 +11,8 @@ import (
 
 func main() {
 
-	task01()
-	//task02()
+	//task01()
+	task02()
 
 }
 
@@ -65,7 +65,63 @@ func task01() {
 }
 
 func task02() {
+	file, err := os.Open("./input11.txt")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer file.Close()
+	scanner := bufio.NewScanner(file)
 
+	//Prepare Data
+	grid := make([][]int, 0)
+	for scanner.Scan() {
+		row := make([]int, 0)
+		line := scanner.Text()
+		slc := strings.Split(line, "")
+		for x := range slc {
+			row = append(row, convertInt(slc[x]))
+		}
+		grid = append(grid, row)
+	}
+
+	if err := scanner.Err(); err != nil {
+		log.Fatal(err)
+	}
+
+	var flashCount int
+
+	allFlashing := false
+	for i := 0; !allFlashing; i++ {
+		//First every energylevel increase by one
+		for y, row := range grid {
+			for x := range row {
+				grid[y][x]++
+			}
+		}
+
+		for y, row := range grid {
+			for x, col := range row {
+				if col > 9 {
+					flashCount += flash(grid, x, y)
+				}
+			}
+		}
+
+		allFlashing = true
+		for _, row := range grid {
+			for _, col := range row {
+				if col != 0 {
+					allFlashing = false
+				}
+			}
+		}
+
+		if allFlashing {
+			fmt.Println(grid)
+			fmt.Println("STEP: ", i+1)
+		}
+
+	}
 }
 
 func flash(grid [][]int, x int, y int) int {
