@@ -10,14 +10,14 @@ import (
 
 func main() {
 
-	task01()
-	//task02()
+	task()
 
 }
 
-var count int
+var count1 int
+var count2 int
 
-func task01() {
+func task() {
 	file, err := os.Open("./input12.txt")
 	if err != nil {
 		log.Fatal(err)
@@ -41,14 +41,49 @@ func task01() {
 	for _, element := range caveNodes["start"] {
 		route := make([]string, 0)
 		route = append(route, "start")
-		followRoute(caveNodes, element, make(map[string]bool), route)
+		followRouteTask01(caveNodes, element, make(map[string]bool), route)
+		followRouteTask02(caveNodes, element, make(map[string]bool), route, "")
 	}
 
-	fmt.Println("Number of Routes ", count)
+	fmt.Println("Number of Routes ", count1)
+	fmt.Println("Number of Routes ", count2)
 
 }
 
-func followRoute(caveNodes map[string][]string, nodeName string, visited map[string]bool, route []string) {
+func followRouteTask01(caveNodes map[string][]string, nodeName string, visited map[string]bool, route []string) {
+
+	//copying the map to prevent reference access
+	copyMap := make(map[string]bool)
+	for key, value := range visited {
+		copyMap[key] = value
+	}
+
+	if strings.ToLower(nodeName) == nodeName {
+		copyMap[nodeName] = true
+	}
+
+	route = append(route, nodeName)
+	for _, element := range caveNodes[nodeName] {
+		if element != "end" && element != "start" {
+			if strings.ToLower(element) == element {
+				if _, isVisited := copyMap[element]; isVisited {
+					//Route end, nothing to do anymore
+					continue
+				}
+			}
+			followRouteTask01(caveNodes, element, copyMap, route)
+
+		} else if element == "end" {
+			route = append(route, "end")
+			count1++
+			//fmt.Println(route)
+			continue
+		}
+	}
+
+}
+
+func followRouteTask02(caveNodes map[string][]string, nodeName string, visited map[string]bool, route []string, twiceVisitedCave string) {
 
 	//copying the map to prevent reference access
 	copyMap := make(map[string]bool)
@@ -64,20 +99,19 @@ func followRoute(caveNodes map[string][]string, nodeName string, visited map[str
 		if element != "end" && element != "start" {
 			if strings.ToLower(element) == element {
 				if _, isVisited := copyMap[element]; isVisited {
-					//Route end, nothing to do anymore
+					if twiceVisitedCave == "" {
+						// branch out with this small cave
+						followRouteTask02(caveNodes, element, copyMap, route, element)
+					}
 					continue
 				}
 			}
-			followRoute(caveNodes, element, copyMap, route)
+			followRouteTask02(caveNodes, element, copyMap, route, twiceVisitedCave)
 
 		} else if element == "end" {
 			route = append(route, "end")
-			count++
+			count2++
 			//fmt.Println(route)
 		}
 	}
-
-}
-
-func task02() {
 }
