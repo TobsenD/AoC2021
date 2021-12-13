@@ -42,12 +42,14 @@ func task() {
 		}
 	}
 
-	command := strings.Split(fold[0], "=")
+	for _, ele := range fold {
+		command := strings.Split(ele, "=")
 
-	if command[0] == "y" {
-		paper = foldUp(paper, convertInt(command[1]))
-	} else {
-		paper = foldLeft(paper, convertInt(command[1]))
+		if command[0] == "y" {
+			paper = foldUp(paper, convertInt(command[1]))
+		} else {
+			paper = foldLeft(paper, convertInt(command[1]))
+		}
 	}
 
 	printPaper(paper)
