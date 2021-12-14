@@ -7,11 +7,15 @@ import (
 	"math"
 	"os"
 	"strings"
+	"time"
 )
 
 func main() {
 
+	start := time.Now()
 	task()
+	elapsed := time.Since(start)
+	log.Printf("Execution took %s", elapsed)
 
 }
 
