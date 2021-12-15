@@ -45,6 +45,50 @@ func task() {
 		log.Fatal(err)
 	}
 
+	matrix2 := make([][]int64, 0)
+
+	for i := int64(0); i < 5; i++ {
+		for _, row := range matrix {
+			var newRow []int64
+			for j := int64(0); j < 5; j++ {
+				for _, col := range row {
+
+					newRow = append(newRow, countUp(col, (i+j)))
+				}
+			}
+			matrix2 = append(matrix2, newRow)
+		}
+	}
+
+	fmt.Println("Task01: ")
+	dijkstraCalc(matrix)
+
+	fmt.Println("Task02: ")
+	dijkstraCalc(matrix2)
+
+}
+
+func countUp(val int64, multi int64) int64 {
+
+	sum := val + multi
+	for sum > 9 {
+		sum = sum - 9
+	}
+
+	return sum
+}
+
+func convertInt(s string) int {
+	i, err := strconv.Atoi(s)
+	if err != nil {
+		// handle error
+		fmt.Println(err)
+		os.Exit(2)
+	}
+	return i
+}
+
+func dijkstraCalc(matrix [][]int64) {
 	//Work with data
 	mHeight := len(matrix)
 	mWidth := len(matrix[0])
@@ -89,15 +133,4 @@ func task() {
 		log.Fatal(err)
 	}
 	fmt.Println("Shortest distance ", best.Distance, " following path ", best.Path)
-
-}
-
-func convertInt(s string) int {
-	i, err := strconv.Atoi(s)
-	if err != nil {
-		// handle error
-		fmt.Println(err)
-		os.Exit(2)
-	}
-	return i
 }
