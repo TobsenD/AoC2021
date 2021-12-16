@@ -16,7 +16,7 @@ func main() {
 
 	start := time.Now()
 
-	file, err := os.Open("./input15.txt")
+	file, err := os.Open("./input16.txt")
 	if err != nil {
 		log.Fatal(err)
 	}
