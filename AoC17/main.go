@@ -63,7 +63,7 @@ func calculateRoute(area Area, maxY int) int {
 				movX: x,
 				movY: y,
 			}
-			if hit := fireTarget(missle, area); hit {
+			if fireTarget(missle, area) {
 				hits++
 			}
 		}
