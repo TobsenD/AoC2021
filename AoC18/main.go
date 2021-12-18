@@ -51,6 +51,7 @@ func task() {
 	}
 
 	Task01(lines)
+	Task02(lines)
 
 }
 
@@ -61,7 +62,36 @@ func Task01(lines []string) {
 		exp = add(exp, parse(line))
 		exp = reduce(exp)
 	}
-	magnitude(exp)
+	fmt.Println(magnitude(exp))
+}
+
+func Task02(lines []string) {
+	values := []tree{}
+
+	for _, line := range lines {
+		values = append(values, reduce(parse(line)))
+	}
+
+	max := 0
+	for i, a := range values {
+		for j, b := range values {
+			if i != j {
+				exp := add(a, b)
+				exp = reduce(exp)
+				m := magnitude(exp)
+				if m > max {
+					max = m
+				}
+				exp = add(b, a)
+				exp = reduce(exp)
+				m = magnitude(exp)
+				if m > max {
+					max = m
+				}
+			}
+		}
+	}
+	fmt.Println(max)
 }
 
 func parse(line string) tree {
@@ -166,14 +196,14 @@ func replaceIndex(s tree, i int, a value, b value) tree {
 	return append(res, s[i+1:]...)
 }
 
-func magnitude(l tree) {
+func magnitude(t tree) int {
 	stack := newStack()
-	for _, v := range l {
+	for _, v := range t {
 		stack.pushMagnitude(v)
 
 	}
 	top := stack.removeStack()
-	fmt.Println(top.v)
+	return top.v
 }
 
 func (s *stack) pushMagnitude(v value) {
